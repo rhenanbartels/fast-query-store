@@ -24,7 +24,7 @@ async def root():
 
 # TODO: create db connections pool. (Maybe use a dict)
 # TODO: create result set serializer
-@app.get("/{slug}")
+@app.get("/query/{slug}")
 async def execute(slug: str, settings: Settings = Depends(get_settings)):
     queries_file = backends.get_queries_file(settings.queries_file_path)
     db_engine = create_engine(queries_file[slug]["db_url"])

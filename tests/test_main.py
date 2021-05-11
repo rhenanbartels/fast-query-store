@@ -60,7 +60,7 @@ class TestMain:
         main.app.dependency_overrides[main.get_settings] = get_settings_override
 
         query_slug = "query-slug-1"
-        response = test_client.get(f"/{query_slug}")
+        response = test_client.get(f"/query/{query_slug}")
         expected_rs = [
             {
                 'product_no': 1,
