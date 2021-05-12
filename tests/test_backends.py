@@ -69,3 +69,25 @@ class TestJsonBackend:
             query = await backend.get_query(setup["query_slug"])
 
         assert query["db_url"] == db_url
+
+    @pytest.mark.asyncio
+    async def test_read_db_url(self, setup):
+        db_url = "postgres_url"
+        backend = JsonBackend(file_path=setup["file_path"])
+
+        url = await backend.get_db_url(db_url)
+        expected_url = "postgres_url"
+
+        assert url == expected_url
+
+    @pytest.mark.asyncio
+    async def test_read_db_url_from_env_var(self, setup):
+        db_url = "${DB_ENV_URL}"
+        backend = JsonBackend(file_path=setup["file_path"])
+
+        with mock.patch.dict(os.environ, {"DB_ENV_URL": "postgres_url"}):
+            url = await backend.get_db_url(db_url)
+
+        expected_url = "postgres_url"
+
+        assert url == expected_url
