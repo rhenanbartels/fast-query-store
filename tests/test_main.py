@@ -81,3 +81,9 @@ class TestMain:
 
         assert response.status_code == 200
         assert response.json()["result_set"] == expected_rs
+
+    def test_return_404_when_slug_doesnt_exist(self, test_client):
+        query_slug = "missing-slug"
+        response = test_client.get(f"/query/{query_slug}")
+
+        assert response.status_code == 404
