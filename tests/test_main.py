@@ -38,11 +38,11 @@ class TestMain:
         assert response.json()["message"] == "hello world"
 
     def test_execute_query_from_query_slug_request(
-            self,
-            test_client,
-            queries_json_file,
-            database_engine,
-            db_url,
+        self,
+        test_client,
+        queries_json_file,
+        database_engine,
+        db_url,
     ):
         query_slug = "query-slug-1"
         query_cmd = "SELECT * FROM products"
@@ -63,32 +63,20 @@ class TestMain:
         query_slug = "query-slug-1"
         response = test_client.get(f"/query/{query_slug}")
         expected_rs = [
-            {
-                'product_no': 1,
-                'name': 'Cheese',
-                'price': 9.99
-            },
-            {
-                'product_no': 2,
-                'name': 'Bread',
-                'price': 1.99
-            },
-            {
-                'product_no': 3,
-                'name': 'Milk',
-                'price': 2.99
-            },
+            {"product_no": 1, "name": "Cheese", "price": 9.99},
+            {"product_no": 2, "name": "Bread", "price": 1.99},
+            {"product_no": 3, "name": "Milk", "price": 2.99},
         ]
 
         assert response.status_code == 200
         assert response.json()["result_set"] == expected_rs
 
     def test_fill_db_url_in_json_with_env_var(
-            self,
-            test_client,
-            queries_json_file,
-            database_engine,
-            db_url,
+        self,
+        test_client,
+        queries_json_file,
+        database_engine,
+        db_url,
     ):
         query_slug = "query-slug-1"
         query_cmd = "SELECT * FROM products"
@@ -111,21 +99,9 @@ class TestMain:
             response = test_client.get(f"/query/{query_slug}")
 
         expected_rs = [
-            {
-                'product_no': 1,
-                'name': 'Cheese',
-                'price': 9.99
-            },
-            {
-                'product_no': 2,
-                'name': 'Bread',
-                'price': 1.99
-            },
-            {
-                'product_no': 3,
-                'name': 'Milk',
-                'price': 2.99
-            },
+            {"product_no": 1, "name": "Cheese", "price": 9.99},
+            {"product_no": 2, "name": "Bread", "price": 1.99},
+            {"product_no": 3, "name": "Milk", "price": 2.99},
         ]
 
         assert response.status_code == 200

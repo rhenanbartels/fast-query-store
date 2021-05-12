@@ -30,18 +30,15 @@ def queries_json_file():
 @pytest.fixture(scope="module")
 def db_url():
     yield os.path.join(
-            test_settings.TEST_POSTGRES_SERVICE_URL,
-            test_settings.TEST_POSTGRES_DB_NAME,
+        test_settings.TEST_POSTGRES_SERVICE_URL,
+        test_settings.TEST_POSTGRES_DB_NAME,
     )
 
 
 @pytest.fixture(scope="module")
 def database_engine(db_url):
     logger.info("creating test database...")
-    engine = create_engine(
-            test_settings.TEST_POSTGRES_SERVICE_URL,
-            isolation_level="AUTOCOMMIT"
-    )
+    engine = create_engine(test_settings.TEST_POSTGRES_SERVICE_URL, isolation_level="AUTOCOMMIT")
     with engine.connect() as conn, suppress(sqlalchemy.exc.ProgrammingError):
         conn.execute(f"CREATE DATABASE {test_settings.TEST_POSTGRES_DB_NAME}")
 
