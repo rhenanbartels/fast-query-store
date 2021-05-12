@@ -1,5 +1,6 @@
 import json
 import os
+from unittest import mock
 
 import pytest
 
@@ -61,6 +62,54 @@ class TestMain:
 
         query_slug = "query-slug-1"
         response = test_client.get(f"/query/{query_slug}")
+        expected_rs = [
+            {
+                'product_no': 1,
+                'name': 'Cheese',
+                'price': 9.99
+            },
+            {
+                'product_no': 2,
+                'name': 'Bread',
+                'price': 1.99
+            },
+            {
+                'product_no': 3,
+                'name': 'Milk',
+                'price': 2.99
+            },
+        ]
+
+        assert response.status_code == 200
+        assert response.json()["result_set"] == expected_rs
+
+    def test_fill_db_url_in_json_with_env_var(
+            self,
+            test_client,
+            queries_json_file,
+            database_engine,
+            db_url,
+    ):
+        query_slug = "query-slug-1"
+        query_cmd = "SELECT * FROM products"
+        json_content = {
+            query_slug: {
+                "query": query_cmd,
+                "db_url": "${DATABASE_ENV_VARIABLE}",
+            },
+        }
+        with open(queries_json_file.name, "w") as fobj:
+            json.dump(json_content, fobj)
+
+        def get_settings_override():
+            return config.Settings(queries_file_path=queries_json_file.name)
+
+        main.app.dependency_overrides[main.get_settings] = get_settings_override
+
+        query_slug = "query-slug-1"
+        with mock.patch.dict(os.environ, {"DATABASE_ENV_VARIABLE": db_url}):
+            response = test_client.get(f"/query/{query_slug}")
+
         expected_rs = [
             {
                 'product_no': 1,

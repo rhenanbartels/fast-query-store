@@ -21,7 +21,7 @@ def test_client():
         yield client
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def queries_json_file():
     queries_file = NamedTemporaryFile(suffix=".json", delete=False)
     yield queries_file

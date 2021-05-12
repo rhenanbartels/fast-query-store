@@ -1,0 +1,2 @@
+class QueryNotFoundError(Exception):
+    pass
