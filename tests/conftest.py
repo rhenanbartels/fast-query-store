@@ -37,6 +37,7 @@ def db_url():
 
 @pytest.fixture(scope="module")
 def database_engine(db_url):
+    logger.info("creating test database...")
     engine = create_engine(
             test_settings.TEST_POSTGRES_SERVICE_URL,
             isolation_level="AUTOCOMMIT"

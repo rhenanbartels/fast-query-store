@@ -33,4 +33,6 @@ async def execute(slug: str, settings: Settings = Depends(get_settings)):
     with db_engine.connect() as conn:
         result_set = conn.execute(queries_file[slug]["query"]).fetchall()
 
+    db_engine.dispose()
+
     return {"result_set": result_set}
