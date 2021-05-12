@@ -1,10 +1,12 @@
+import json
 import pathlib
 import os
 import re
 from functools import cached_property, lru_cache
 from typing import Dict, Union
 
-import json
+import aiofiles
+
 
 from app.exceptions import QueryNotFoundError
 
@@ -14,13 +16,13 @@ class JsonBackend:
         self.file_path = file_path
 
     @cached_property
-    def queries(self) -> None:
-        with open(self.file_path, "r") as fobj:
-            content = json.load(fobj)
+    async def queries(self) -> None:
+        async with aiofiles.open(self.file_path, "r") as fobj:
+            content = json.loads(await fobj.read())
 
         return content
 
-    def get_db_url(self, url):
+    async def get_db_url(self, url):
         _url = url
         match = re.search(r"\${(.*?)}", url)
         if match:
@@ -29,10 +31,11 @@ class JsonBackend:
 
         return _url
 
-    def get_query(self, slug: str) -> Dict:
-        if slug not in self.queries:
+    async def get_query(self, slug: str) -> Dict:
+        queries = await self.queries
+        if slug not in queries:
             raise QueryNotFoundError
 
-        query = self.queries[slug]
-        query["db_url"] = self.get_db_url(query["db_url"])
+        query = queries[slug]
+        query["db_url"] = await self.get_db_url(query["db_url"])
         return query

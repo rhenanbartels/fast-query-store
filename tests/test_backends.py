@@ -35,25 +35,29 @@ class TestJsonBackend:
         }
         yield fixtures
 
-    def test_open_queries_file(self, setup):
+    @pytest.mark.asyncio
+    async def test_open_queries_file(self, setup):
         backend = JsonBackend(file_path=setup["file_path"])
-        queries = backend.queries
+        queries = await backend.queries
 
         assert queries == setup["json_content"]
 
-    def test_get_query_by_slug(self, setup):
+    @pytest.mark.asyncio
+    async def test_get_query_by_slug(self, setup):
         backend = JsonBackend(file_path=setup["file_path"])
-        query = backend.get_query(setup["query_slug"])
+        query = await backend.get_query(setup["query_slug"])
 
         assert query == setup["json_content"][setup["query_slug"]]
 
-    def test_raise_exception_if_query_doesn_exist(self, setup):
+    @pytest.mark.asyncio
+    async def test_raise_exception_if_query_doesn_exist(self, setup):
         backend = JsonBackend(file_path=setup["file_path"])
 
         with pytest.raises(QueryNotFoundError):
-            backend.get_query("missing-query")
+            await backend.get_query("missing-query")
 
-    def test_read_db_url_from_env_var(self, setup):
+    @pytest.mark.asyncio
+    async def test_read_db_url_from_env_var(self, setup):
         env_var = "${DB_URL}"
         db_url = "postgresql://user:pwd@localhost:5432/db"
         setup["json_content"][setup["query_slug"]]["db_url"] = env_var
@@ -62,6 +66,6 @@ class TestJsonBackend:
 
         backend = JsonBackend(file_path=setup["file_path"])
         with mock.patch.dict(os.environ, {"DB_URL": db_url}):
-            query = backend.get_query(setup["query_slug"])
+            query = await backend.get_query(setup["query_slug"])
 
         assert query["db_url"] == db_url

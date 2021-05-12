@@ -28,7 +28,7 @@ async def root():
 async def execute(slug: str, settings: Settings = Depends(get_settings)):
     backend = backends.JsonBackend(file_path=settings.queries_file_path)
     try:
-        query = backend.get_query(slug)
+        query = await backend.get_query(slug)
     except QueryNotFoundError:
         raise HTTPException(status_code=404, detail=f"Query '{slug}' not found")
 
