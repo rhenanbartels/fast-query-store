@@ -1,7 +1,5 @@
-import json
 import logging
 from functools import lru_cache
-from typing import List
 
 import sqlalchemy
 from fastapi import Depends, FastAPI, HTTPException
@@ -52,7 +50,7 @@ async def execute(slug: str, settings: Settings = Depends(get_settings)):
             result_set = jsonable_encoder(conn.execute(query["query"]).fetchall())
         except (ProgrammingError, OperationalError) as e:
             logger.error(f"{e!r}")
-            raise HTTPException(status_code=500, detail=f"Server side error")
+            raise HTTPException(status_code=500, detail="Server side error")
         finally:
             conn.close()
             db_engine.dispose()
