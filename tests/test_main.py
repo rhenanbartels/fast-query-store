@@ -138,3 +138,30 @@ class TestMain:
         response = test_client.get(f"/query/{query_slug}")
 
         assert response.status_code == 404
+
+    def test_return_500_when_error_occurs_in_database(
+        self,
+        test_client,
+        queries_json_file,
+        database_engine,
+        db_url,
+    ):
+        query_slug = "query-slug-1"
+        query_cmd = "SELECT * FROM missing_table"
+        json_content = {
+            query_slug: {
+                "query": query_cmd,
+                "db_url": db_url,
+            },
+        }
+        with open(queries_json_file.name, "w") as fobj:
+            json.dump(json_content, fobj)
+
+        def get_settings_override():
+            return config.Settings(queries_file_path=queries_json_file.name)
+
+        main.app.dependency_overrides[main.get_settings] = get_settings_override
+
+        response = test_client.get(f"/query/{query_slug}")
+
+        assert response.status_code == 500
