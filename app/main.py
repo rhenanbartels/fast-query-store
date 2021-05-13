@@ -28,8 +28,11 @@ async def startup():
 
 
 @app.get("/")
-async def root():
-    return {"message": "hello world"}
+async def root(settings: Settings = Depends(get_settings)):
+    backend = backends.JsonBackend(file_path=settings.queries_file_path)
+    queries = await backend.queries
+    slugs = sorted(queries.keys())
+    return {"slugs": slugs}
 
 
 @app.get("/query/{slug}")

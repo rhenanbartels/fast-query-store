@@ -31,11 +31,37 @@ class TestMain:
         database_engine.execute(create_tb)
         database_engine.execute(insert_data)
 
-    def test_root_route(self, test_client):
+    def test_root_route_return_available_queries(
+        self,
+        test_client,
+        queries_json_file,
+        db_url,
+    ):
+        query_slug_1 = "query-slug-1"
+        query_cmd = "SELECT * FROM products"
+        query_slug_2 = "query-slug-2"
+        json_content = {
+            query_slug_1: {
+                "query": query_cmd,
+                "db_url": db_url,
+            },
+            query_slug_2: {
+                "query": query_cmd,
+                "db_url": db_url,
+            },
+        }
+        with open(queries_json_file.name, "w") as fobj:
+            json.dump(json_content, fobj)
+
+        def get_settings_override():
+            return config.Settings(queries_file_path=queries_json_file.name)
+
+        main.app.dependency_overrides[main.get_settings] = get_settings_override
+
         response = test_client.get("/")
 
         assert response.status_code == 200
-        assert response.json()["message"] == "hello world"
+        assert response.json()["slugs"] == [query_slug_1, query_slug_2]
 
     def test_execute_query_from_query_slug_request(
         self,
