@@ -16,4 +16,4 @@
 .vscode/
 MANIFEST
 __pycache__/
-docker/
+docker/data
