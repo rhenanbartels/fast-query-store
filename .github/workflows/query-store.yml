@@ -33,4 +33,7 @@ jobs:
         pip install -I -r requirements-development.txt
     - name: Run Tests
       run: |
-        pytest -v
+        source "$ENV_FILE"
+        pytest -v tests/
+      env:
+        ENV_FILE: .env
