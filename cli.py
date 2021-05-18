@@ -2,7 +2,12 @@ import click
 import uvicorn
 
 
-@click.command("run", short_help="Run a development server.")
+@click.group()
+def cli():
+    pass
+
+
+@cli.command("run", short_help="Run a uvicorn server.")
 @click.option("--host", "-h", default="127.0.0.1", help="The interface to bind to.")
 @click.option("--port", "-p", default=5000, help="The port to bind to.")
 def run_command(host, port):

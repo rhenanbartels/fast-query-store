@@ -1,7 +1,7 @@
 import setuptools
 from os import path
 
-__version__ = "0.0.3.dev0"
+__version__ = "0.0.4.dev0"
 
 here = path.abspath(path.dirname(__file__))
 
@@ -12,7 +12,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setuptools.setup(
     name="fast-query-store",
-    version="0.0.3.dev0",
+    version="0.0.4.dev0",
     author="Rhenan and Turicas",
     author_email="rhenan.bartels@gmail.com",
     description="A Fast Backend API for database queries",
@@ -37,4 +37,8 @@ setuptools.setup(
         "SQLAlchemy==1.4.13",
         "uvicorn[standard]",
     ],
+    entry_points="""
+        [console_scripts]
+        fqs=cli:cli
+    """
 )
